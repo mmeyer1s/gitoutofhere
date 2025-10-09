@@ -21,9 +21,9 @@ GP 4.2 -- create commit using Commit.makeCommit(String author, String message)
 1. Initialize repo 
 2. build rootTree and get its Hash
 3. read parent commit hash from HEAD
+    - uses this to establish linking b/w commits
     -  Uses BufferedReader to extract previous commit hash
     - If HEAD dne, parent field omitted for initial commit
 4. record date and time
 5. format and create commit file
 6. take hash of commit file contents and use it to save commit file to objects
-7. make each commit file point to parent commit hash
