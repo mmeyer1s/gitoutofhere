@@ -1,7 +1,7 @@
 import java.io.*;
 
 public class Commit {
-    public String makeCommit(String author, String message) {
+    public static String makeCommit(String author, String message) {
         MyRepo repository = new MyRepo("StageRepo", true);
         String currentTreeHash = new GitTreeWorking(repository).buildTreeFromDirectory("myProgram");
         File headFile = new File("git/HEAD");
