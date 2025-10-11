@@ -27,3 +27,7 @@ GP 4.2 -- create commit using Commit.makeCommit(String author, String message)
 4. record date and time
 5. format and create commit file
 6. take hash of commit file contents and use it to save commit file to objects
+
+GP 4.3 -- Implement GitWrapper class
+- minor bug found: references to git/(some filePath) rather than full filePath: "StageRepo/git/(some filePath)
+- there was no missing functionality
