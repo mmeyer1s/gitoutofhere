@@ -2,6 +2,23 @@ import java.io.*;
 
 public class GitTester {
 
+    public static void cleanup(String filePath) {
+        File file = new File(filePath);
+        rmrf(file);
+    }
+
+    public static void rmrf(File file) {
+        if (!file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) { 
+                rmrf(f);    
+            }
+        }
+        file.delete(); 
+    }
+
     public static void main(String args[]) {
 
         try {
@@ -36,13 +53,15 @@ public class GitTester {
             System.out.println("Failed to create files/folders: " + e);
             return;
         }
-    
-		
+
+
 		GitWrapper gw = new GitWrapper();
-        // gw.add("myProgram/hello.txt");
-        // gw.add("myProgram/inner/world.txt");
-        gw.commit("John Doe", "Initial commit");
-        // gw.checkout("1234567890");
+        gw.add("myProgram/hello.txt");
+        gw.add("myProgram/inner/world.txt");
+        String commitHash = gw.commit("John Doe", "Initial commit");
+        gw.checkout(commitHash);
+        cleanup("StageRepo");
+        GitTester.cleanup("StageRepo");
 
     }
     

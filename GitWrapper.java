@@ -106,7 +106,7 @@ public class GitWrapper {
      * @param commitHash The SHA1 hash of the commit to check out.
      */
     public void checkout(String commitHash) {
-        File commitFile = new File(repository.gitFolder.getPath() + "/objects/" + commitHash);
+        File commitFile = new File("StageRepo/git/objects/" + commitHash);
         if (!commitFile.exists()) {
             throw new RuntimeException("Commit not found: " + commitHash);
         } 
