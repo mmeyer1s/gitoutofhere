@@ -1,10 +1,10 @@
 import java.io.*;
 
 public class Commit {
-    public String makeCommit(String author, String message) {
+    public static String makeCommit(String author, String message) {
         MyRepo repository = new MyRepo("StageRepo", true);
         String currentTreeHash = new GitTreeWorking(repository).buildTreeFromDirectory("myProgram");
-        File headFile = new File("git/HEAD");
+        File headFile = new File("StageRepo/git/HEAD");
         String parentHash = "";
         if (headFile.exists()) {
             try (BufferedReader br = new BufferedReader(new FileReader(headFile))) {
@@ -29,7 +29,7 @@ public class Commit {
         } catch (Exception e) {
             System.out.println(e);
         }
-        File commitFile = new File("git/objects/" + commitHash);
+        File commitFile = new File("StageRepo/git/objects/" + commitHash);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(commitFile))) {
             bw.write(commitText);
         } catch (IOException e) {
