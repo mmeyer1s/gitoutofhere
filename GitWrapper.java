@@ -21,7 +21,7 @@ public class GitWrapper {
      */
     public void init() {
         repository = new MyRepo("StageRepo", true);
-    };
+    }
 
     /**
      * Stages a file for the next commit.
@@ -33,32 +33,41 @@ public class GitWrapper {
      * @param filePath The path to the file to be staged.
      */
     public void add(String filePath) {
-        filePath = repository.findFile(filePath);
-        if (filePath == null) {
-            throw new RuntimeException("File not found: " + filePath);
-        }
-        File file = new File(filePath);
-        if (!file.exists()) {
-            throw new RuntimeException("File missing: " + filePath);
-        } 
-        if (file.isDirectory()) {
-            throw new RuntimeException("Can't stage a directory: " + filePath);
-        }
-        boolean alreadyIndexed = false;
-        try (BufferedReader br = new BufferedReader(new FileReader(repository.gitFolder.getPath() + "/index"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.endsWith(filePath)) {
-                    alreadyIndexed = true;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-        }
-        if (alreadyIndexed) return;
+        
+        try {
+     
+            File file = new File("StageRepo/" + filePath);
+            String fileName = file.getName();
+            String parentPath = file.getParent();
 
-        String blobSha1 = repository.createBlobFromFile(file);
-        repository.addFileToIndex(blobSha1, filePath); 
+            String actualFilePath = repository.findFile(fileName, parentPath);
+            File actualFile = new File(actualFilePath);
+            if (actualFile.isDirectory() || !actualFile.exists()) {
+                throw new IOException();
+            }
+
+            boolean alreadyIndexed = false;
+            try (BufferedReader br = new BufferedReader(new FileReader("StageRepo/git/index"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.endsWith(actualFilePath)) {
+                        alreadyIndexed = true;
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+
+            }
+            if (alreadyIndexed) {
+                return;
+            }
+            String blobSha1 = repository.createBlobFromFile(actualFile);
+            repository.addFileToIndex(blobSha1, fileName);
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error in add: " + e.getMessage());
+        }
+
+        
     }
 
 
@@ -97,7 +106,24 @@ public class GitWrapper {
      * @param commitHash The SHA1 hash of the commit to check out.
      */
     public void checkout(String commitHash) {
-        // to-do: implement functionality here
+        File commitFile = new File(repository.gitFolder.getPath() + "/objects/" + commitHash);
+        if (!commitFile.exists()) {
+            throw new RuntimeException("Commit not found: " + commitHash);
+        } 
+        try (BufferedReader br = new BufferedReader(new FileReader(commitFile))) {
+            String treeSha = null, line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("tree: ")) {
+                    treeSha = line.substring(6).trim();
+                    break;
+                }
+            }
+            if (treeSha == null) {
+                throw new RuntimeException("No tree found for commit!");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error during checkout", e);
+        }
 
-    };
+    }
 }

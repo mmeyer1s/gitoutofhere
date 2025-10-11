@@ -113,7 +113,7 @@ public class MyRepo {
         gitFolder = new File(repoName + "/git");
         gitFolder.mkdir();
 
-        File indexFile = new File(gitFolder.getPath() + "/index");
+        File indexFile = new File("StageRepo/git/index");
         File objectsFolder = new File(gitFolder.getPath() + "/objects/");
         File HEAD = new File(gitFolder.getPath() + "/HEAD/");
 
@@ -312,7 +312,7 @@ public class MyRepo {
         }
 
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(gitFolder.getPath() + "/index", true));
+            BufferedWriter bw = new BufferedWriter(new FileWriter("StageRepo/git/index", true));
             bw.write(blobHashString + " " + findFile(fileNameString));
             bw.newLine();
             bw.close();
@@ -353,7 +353,7 @@ public class MyRepo {
             String compressed = Compression.compress(content);
             String sha1 = Sha1Generator.generateSha1(compressed);
 
-            File objFile = new File(gitFolder, "objects/" + sha1);
+            File objFile = new File("StageRepo/git/objects/" + sha1);
             if (!objFile.exists()) {
                 objFile.createNewFile();
                 try (BufferedWriter bw = new BufferedWriter(new FileWriter(objFile))) {
@@ -380,7 +380,7 @@ public class MyRepo {
             String compressed = Compression.compress(contents);
             String sha1 = Sha1Generator.generateSha1(compressed);
 
-            File objFile = new File(gitFolder, "objects/" + sha1);
+            File objFile = new File("StageRepo/git/objects/" + sha1);
             if (!objFile.exists()) {
                 objFile.createNewFile();
                 try (BufferedWriter bw = new BufferedWriter(new FileWriter(objFile))) {
